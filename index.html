@@ -1,1 +1,55 @@
- <iframe src="https://void.framer.photos">
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Embedded Framer Site</title>
+
+  <!-- Minimal resets so iframe occupies full viewport -->
+  <style>
+    html,body { height:100%; margin:0; }
+    body { display:flex; flex-direction:column; min-height:100vh; }
+    /* Optional header area (remove if not wanted) */
+    #header { height:48px; display:flex; align-items:center; padding:0 12px; background:#fff; box-shadow:0 1px 0 rgba(0,0,0,0.04); z-index:10; }
+    #frameWrap { flex:1 1 auto; height:calc(100vh - 48px); }
+    iframe {
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+  </style>
+</head>
+<body>
+  <!-- Optional small header you can style or remove -->
+  <div id="header">
+    <strong>My Framer Embed</strong>
+  </div>
+
+  <div id="frameWrap">
+    <!-- Replace with your Framer URL -->
+    <iframe id="framerFrame" src="https://void.framer.photos/about" allowfullscreen sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+  </div>
+
+  <script>
+    // Try to auto-resize frame height if you later make it non-fullscreen (keeps it robust)
+    (function(){
+      var f = document.getElementById('framerFrame');
+
+      // If Framer allows postMessage resizing, you could implement here.
+      // Fallback: keep full viewport; nothing further needed.
+      // Optional: open any link clicked inside iframe in top window (best-effort; subject to cross-origin)
+      window.addEventListener('message', function(e){
+        // trust only messages from the expected origin (optional)
+        // if (e.origin !== 'https://yourname.framer.website') return;
+        try {
+          var data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+          if (data && data.type === 'navigate' && data.href) {
+            window.location.href = data.href;
+          }
+        } catch(err){}
+      }, false);
+    })();
+  </script>
+</body>
+</html>
